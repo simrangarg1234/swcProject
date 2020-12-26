@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>SWC Course Directory</title>
+        <link rel="icon" href="../images/swc_icon.ico"/>
+        <style>
+            body{
+                font-family: arial;
+                margin: 0;
+            }
+            nav{
+                background: skyblue;
+                padding: 20px 10px;
+            }
+            nav ul{
+                max-width: 960px;
+                margin: 0 auto;
+                padding: 0;
+            }
+            nav li{
+                list-style-type: none;
+                display: inline-block;
+                margin: 0 10px 0 0;
+            }
+            nav a{
+                color: black;
+                font-size: 18px;
+                background: rgba(255,255,255,0.2);
+                text-decoration: none;
+                padding: 10px;
+                display: block;
+            }
+            main, header{
+                max-width: 960px;
+                margin: 30px auto;
+                padding: 0 10px;
+                color: #333;
+                font-size: large;
+                font-weight: bolder;
+            }
+            label {
+                padding: 0.5rem;
+                margin: 0.5rem;
+                font-size: 1.5rem;
+                width: 30%;
+            }
+            input {
+                padding: 0.5rem;
+                margin: 0.5rem;
+                font-size: 1.5rem;
+                width: 60%;
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <ul>
+                <li><a href="/">Homepage</a></li>
+                <li><a href="/profile">Profile</a></li>
+                <% if (user) { %>
+                <li><a href="/auth/logout">Log out</a></li>
+                <% } else { %>
+                <li><a href="/auth/login">Login</a></li>
+                <% } %>
+            </ul>
+        </nav>
+        <div class="container">
+        <form method="POST" action="/courses/add-course">
+        	<label for="course_id"> Course: </label>
+        	<input type="text" name="course_id" placeholder="Course Id" id="course_id">
+        	<br>
+        	<label for="course_name"> Name of Course: </label>
+        	<input type="text" name="course_name" placeholder="Course Name" id="course_name">
+        	<br>
+        	<label for="credits"> Credits </label>
+        	<input type="text" name="credits" placeholder="Credits" id="credits">
+        	<br>
+        	<label for="course_desc"> Description: </label>
+        	<input type="message" name="course_desc" placeholder="Description" id="course_desc">
+        	<br>
+            <label for="instructur"> Instructur name: </label>
+            <input type="text" name="instructur" placeholder="Instructur name" id="instructur">
+            <br>
+            <label for="level"> level: </label>
+            <input type="text" name="level" placeholder="Graduate/Undergraduate" id="level">
+            <br>
+        	<button type="submit"> Add </button>
+        </form>
+    </div>
+</body>
+</html>
