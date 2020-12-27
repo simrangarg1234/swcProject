@@ -60,15 +60,15 @@
                 <tr>
                     <th> Course Id </th>
                     <th> Course Name </th>
-                    <th> L T P C </th>
+                    <th> Credits </th>
                 </tr>
             <% for(var i=0; i< courses_data.length; i++) {%>
-                <form method="POST" action="/courses/coursecontent" name="<%= courses_data[i].course_id %>">
+                <form method="POST" action="/courses/del/<%= courses_data[i].course_id %>" name="<%= courses_data[i].course_id %>">
                     <tr>
-                        <td> <a href="javascript:document.<%= courses_data[i].course_id %>.submit()"> <%= courses_data[i].course_id %> </a> </td>
-                        <td> <a href="javascript:document.<%= courses_data[i].course_id %>.submit()"> <%= courses_data[i].name %> </a> </td>
-                        <td> <a href="javascript:document.<%= courses_data[i].course_id %>.submit()"> <%= courses_data[i].credits %> </a> </td>
-                        <input type="hidden" name="course_id" value="<%= courses_data[i].course_id %>">
+                        <td> <a href="/courses/<%= courses_data[i].course_id %>"> <%= courses_data[i].course_id %> </a> </td>
+                        <td> <a href="/courses/<%= courses_data[i].course_id %>"> <%= courses_data[i].name %> </a> </td>
+                        <td> <a href="/courses/<%= courses_data[i].course_id %>"> <%= courses_data[i].credits %> </a> </td>
+                        <td> <button type="submit" class="btn btn-danger">Remove</button> </td>
                     </tr>
                 </form>
             <% } %>
@@ -79,3 +79,5 @@
         </main>
     </body>
 </html>
+
+

@@ -8,6 +8,7 @@ const coursesRoutes = require('./routes/courses-routes');
 const passportSetup = require('./config/passport-setup');
 const mongoose = require('mongoose');
 const keys = require('./config/keys');
+var Course = require("./models/courses-model");
 
 const app = express();
 
@@ -26,19 +27,33 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-// connect to mongodb
-mongoose.connect('mongodb://localhost:27017/userdata',{useNewUrlParser: true}, () => {
-    console.log('connected to mongodb');
-});
-
 // set up routes
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 app.use('/courses', coursesRoutes);
 // create home route
+app.get('/home', function(req,res) {
+	res.redirect("/");
+});
+
 app.get('/', (req, res) => {
     res.render('home', { user: req.user });
+});
+
+app.get('/find-course-by-topic', function(req,res) {
+	Course.find(function(err, courses) {
+		if(!courses) {
+			res.send("Sorry !!!");
+		}
+		else {
+			res.render('find-course-by-topic', { user: req.user,courses_data: courses });
+		}
+	});
+});
+
+app.post('/find-course-by-topic', function(req,res) {
+	console.log(req.body.dropdown);
+	res.redirect('/find-course-by-topic');
 });
 
 app.listen(3000, () => {

@@ -13,7 +13,10 @@
     "cookie-session": "^1.4.0",
     "ejs": "^3.1.5",
     "express": "^4.17.1",
+    "grid": "^3.3.7",
     "mongoose": "^5.11.8",
+    "multer": "^1.4.2",
+    "multer-gridfs-storage": "^4.2.0",
     "nodemon": "^2.0.6",
     "passport": "^0.4.1",
     "passport-outlook": "^2.3.0"
