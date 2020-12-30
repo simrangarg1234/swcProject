@@ -8,7 +8,7 @@ const multer = require("multer");
 const GridFsStorage = require("multer-gridfs-storage");
 
 const mongoURI = 'mongodb://localhost:27017/userdata';
-mongoose.connect(mongoURI, { useUnifiedTopology: true, useNewUrlParser: true });
+mongoose.connect(mongoURI, { useNewUrlParser: true,useUnifiedTopology: true, });
 
 const conn = mongoose.connection;
 
@@ -38,12 +38,10 @@ const storage = new GridFsStorage({
         get_filename=req.body.name;
         const fileInfo = {
           filename: filename,
-          metadata: {name: get_filename, course: req.params.courseid},
+          metadata: {name: get_filename, course: req.params.courseid, where: req.params.where},
           bucketName: "uploads"
         };
-        console.log(req.params.courseid);
         resolve(fileInfo);
-        console.log(fileInfo);
       });
     });
   }
@@ -51,69 +49,6 @@ const storage = new GridFsStorage({
 
 const upload = multer({
   storage
-});
-
-router.get("/:courseid/lecture-notes", (req, res) => {
-  if(!gfs) {
-    console.log("some error occured, check connection to db");
-    res.send("some error occured, check connection to db");
-    process.exit(0);
-  }
-  gfs.find().toArray((err, files) => {
-    // check if files
-    if (!files || files.length === 0) {
-    	Course.find( {course_id: req.params.courseid}, function(err, courses) {
-	      return res.render("lecture-notes", {user: req.user, files: false, courses_data: courses});
-  		});
-    } else {
-      const f = files
-        .map(file => {
-          if ( file.contentType === "application/pdf") {
-            file.isPdf = true;
-            file.coursename = req.params.courseid;
-          } else {
-            file.isPdf = false;
-          }
-          return file;
-        })
-        .sort((a, b) => {
-          return (
-            new Date(b["uploadDate"]).getTime() -
-            new Date(a["uploadDate"]).getTime()
-          );
-        });
-        Course.find( {course_id: req.params.courseid}, function(err, courses) {
-	      return res.render("lecture-notes", { user: req.user,files: f,courses_data: courses});
-    	});
-    	}
-  	});
-});
-
-router.post("/:courseid/lecture-notes/upload", upload.single("file"), (req, res) => {
-  res.redirect("/courses/"+req.params.courseid+"/lecture-notes");
-});
-
-router.get("/:courseid/lecture-notes/pdf/:filename", (req, res) => {
-  // console.log('id', req.params.id)
-  const file = gfs
-    .find({
-      filename: req.params.filename
-    })
-    .toArray((err, files) => {
-      if (!files || files.length === 0) {
-        return res.status(404).json({
-          err: "no files exist"
-        });
-      }
-      gfs.openDownloadStreamByName(req.params.filename).pipe(res);
-    });
-});
-
-router.post("/:courseid/lecture-notes/files/del/:id", (req, res) => {
-  gfs.delete(new mongoose.Types.ObjectId(req.params.id), (err, data) => {
-    if (err) return res.status(404).json({ err: err.message });
-    res.redirect("/courses/"+req.params.courseid+"/lecture-notes");
-  });
 });
 
 router.get("/", function(req,res) {
@@ -126,7 +61,6 @@ router.get("/", function(req,res) {
 		}
 	});
 });
-
 
 router.get("/add-course", function(req,res) {
 	//if admin
@@ -182,15 +116,70 @@ router.get('/:courseid/syllabus', function(req,res) {
 	});
 });
 
-// router.get('/:courseid/lecture-notes', function(req,res) {
-// 	Course.find( {course_id: req.params.courseid}, function(err, courses) {
-// 		if(err) {
-// 			res.send("Sorry !!!");
-// 		}
-// 		else {
-// 			res.render('lecture-notes', { user: req.user,courses_data: courses });
-// 		}
-// 	});
-// });
+router.get("/:courseid/:where", (req, res) => {
+  if(!gfs) {
+    console.log("some error occured, check connection to db");
+    res.send("some error occured, check connection to db");
+    process.exit(0);
+  }
+  gfs.find().toArray((err, files) => {
+    // check if files
+    if (!files || files.length === 0) {
+      Course.find( {course_id: req.params.courseid}, function(err, courses) {
+        if(req.params.where == "lecture-notes") return res.render("lecture-notes", { user: req.user,files: false,courses_data: courses});
+        else if(req.params.where == "assignment") return res.render("assignment", { user: req.user,files: false,courses_data: courses});
+        else return res.send("Page not found"); });
+    } else {
+      const f = files
+        .map(file => {
+          if ( file.contentType === "application/pdf") {
+            file.isPdf = true;
+            file.coursename = req.params.courseid;
+          } else {
+            file.isPdf = false;
+          }
+          return file;
+        })
+        .sort((a, b) => {
+          return (
+            new Date(b["uploadDate"]).getTime() -
+            new Date(a["uploadDate"]).getTime()
+          );
+        });
+        Course.find( {course_id: req.params.courseid}, function(err, courses) {
+        if(req.params.where == "lecture-notes") return res.render("lecture-notes", { user: req.user,files: f,courses_data: courses});
+        else if(req.params.where == "assignment") return res.render("assignment", { user: req.user,files: f,courses_data: courses});
+        else return res.send("Page not found"); 
+      });
+      }
+    });
+});
+
+router.post("/:courseid/:where/upload", upload.single("file"), (req, res) => {
+  res.redirect("/courses/"+req.params.courseid+"/"+req.params.where);
+});
+
+router.get("/:courseid/:where/pdf/:filename", (req, res) => {
+  // console.log('id', req.params.id)
+  const file = gfs
+    .find({
+      filename: req.params.filename
+    })
+    .toArray((err, files) => {
+      if (!files || files.length === 0) {
+        return res.status(404).json({
+          err: "no files exist"
+        });
+      }
+      gfs.openDownloadStreamByName(req.params.filename).pipe(res);
+    });
+});
+
+router.post("/:courseid/:where/files/del/:id", (req, res) => {
+  gfs.delete(new mongoose.Types.ObjectId(req.params.id), (err, data) => {
+    if (err) return res.status(404).json({ err: err.message });
+    res.redirect("/courses/"+req.params.courseid+"/"+req.params.where);
+  });
+});
 
 module.exports = router;

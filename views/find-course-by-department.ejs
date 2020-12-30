@@ -75,13 +75,13 @@
             <div class="row">
                 <div class="col-3">
                 </div>
-                <div class="col-2 text-center link-hover active-link">
+                <div class="col-2 text-center link-hover">
                     <a href="/find-course-by-topic"> Topic </a>
                 </div>
                 <div class="col-2 text-center link-hover">
                     <a href="/find-course-by-course-id"> Course_Id </a>
                 </div>
-                <div class="col-2 text-center link-hover">
+                <div class="col-2 text-center link-hover active-link">
                     <a href="/find-course-by-department"> Department </a>
                 </div>
                 <div class="col-3">
@@ -89,18 +89,16 @@
             </div>
         </div>
         <div class="container">
-        <form method="POST" action="/find-course-by-topic" name="form1">
-         <select name = "dropdown" id="select-1" onchange="if(this.selectedIndex) document.form1.submit();">
-            <option value = "Select" selected>-Select-</option>
-            <option value = "Science" >Science</option>
-            <option value = "Mechanics" >Mechanics</option>
-            <option value = "Mathematics" >Mathematics</option>
+         <select name = "dropdown" id="mySearch1" onchange="myFunction1();" >
+            <option value = "" selected>-Level-</option>
+            <option value = "Graduate">Graduate</option>
+            <option value = "Undergraduate">Undergraduate</option>
          </select>
-        </form>
         </div>
+
         <div class="container">
             <div>
-            <table class="table">
+            <table class="table" id="myMenu">
                 <tr>
                     <th> Course Id </th>
                     <th> Course Name </th>
@@ -110,11 +108,29 @@
                     <tr>
                         <td> <a href="/courses/<%= courses_data[i].course_id %>"> <%= courses_data[i].course_id %> </a> </td>
                         <td> <a href="/courses/<%= courses_data[i].course_id %>"> <%= courses_data[i].name %> </a> </td>
-                        <td> <a href="/courses/<%= courses_data[i].course_id %>"> <%= courses_data[i].credits %> </a> </td>
+                        <td> <a href="/courses/<%= courses_data[i].course_id %>"> <%= courses_data[i].level %> </a> </td>
                     </tr>
             <% } %>
             </table>
             </div>
         </div>
+
+        <script>
+            function myFunction1() {
+              var input1, input2, filter1, filter2, table, tr, td, a1, a2, i;
+              input1 = document.getElementById("mySearch1").value;
+              table = document.getElementById("myMenu");
+              tr = table.getElementsByTagName("tr");
+              for (i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td");
+                a1 = td[2].getElementsByTagName("a")[0];
+                if (a1.innerHTML.indexOf(input1) > -1) {
+                  tr[i].style.display = "";
+                } else {
+                  tr[i].style.display = "none";
+                }
+              }
+            }
+            </script>
     </body>
 </html>

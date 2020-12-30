@@ -56,6 +56,28 @@ app.post('/find-course-by-topic', function(req,res) {
 	res.redirect('/find-course-by-topic');
 });
 
+app.get('/find-course-by-course-id', function(req,res) {
+	Course.find(function(err, courses) {
+		if(!courses) {
+			res.send("Sorry !!!");
+		}
+		else {
+			res.render('find-course-by-course-id', { user: req.user,courses_data: courses });
+		}
+	});
+});
+
+app.get('/find-course-by-department', function(req,res) {
+	Course.find(function(err, courses) {
+		if(!courses) {
+			res.send("Sorry !!!");
+		}
+		else {
+			res.render('find-course-by-department', { user: req.user,courses_data: courses });
+		}
+	});
+});
+
 app.listen(3000, () => {
     console.log('app now listening for requests on port 3000');
 });

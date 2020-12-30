@@ -65,25 +65,25 @@
                     </div>
                     <div class="element"><a href="/courses/<%= courses_data[0].course_id %>/syllabus"> Syllabus </a>
                     </div>
-                    <div class="element active"><a href="/courses/<%= courses_data[0].course_id %>/lecture-notes"> Lecture-Notes </a>
+                    <div class="element"><a href="/courses/<%= courses_data[0].course_id %>/lecture-notes"> Lecture-Notes </a>
                     </div>
-                    <div class="element"><a href="/courses/<%= courses_data[0].course_id %>/assignment"> Assignments </a>
+                    <div class="element active"><a href="/courses/<%= courses_data[0].course_id %>/assignment"> Assignments </a>
                     </div>
                 </div>
                 <div class="col-8">
                     <% if(files) { %>
                         <% files.forEach(function(file) {%>
-                        <% if(file.metadata.course == courses_data[0].course_id && file.metadata.where == "lecture-notes") {%>
+                        <% if(file.metadata.course == courses_data[0].course_id && file.metadata.where == "assignment") {%>
                             <div class="card mb-3">
                                 <div class="card-body">
                                     <% if (file.isPdf) { %>
-                                        <a href="/courses/<%= courses_data[0].course_id %>/lecture-notes/pdf/<%= file.filename %>"><%= file.metadata.name %></a>
+                                        <a href="/courses/<%= courses_data[0].course_id %>/assignment/pdf/<%= file.filename %>"><%= file.metadata.name %></a>
                                     <%} else { %>
                                         <p><% file.filename %></p>
                                     <% } %>
                                 </div>
                                 <div class="card-footer">
-                                    <form action="/courses/<%= courses_data[0].course_id %>/lecture-notes/files/del/<%= file._id %>" method="post">
+                                    <form action="/courses/<%= courses_data[0].course_id %>/assignment/files/del/<%= file._id %>" method="post">
                                         <button type="submit" class="btn btn-danger">Remove</button>
                                     </form>
                                 </div>
@@ -99,7 +99,7 @@
                         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 
-                    <form action="/courses/<%= courses_data[0].course_id %>/lecture-notes/upload" method="post" enctype="multipart/form-data">
+                    <form action="/courses/<%= courses_data[0].course_id %>/assignment/upload" method="post" enctype="multipart/form-data">
                     <div class="custom-file mb-3">
                         <input type="text" name="name" placeholder="name of file">
                         <input type="file" class="custom-file-input" name="file" id="file1">

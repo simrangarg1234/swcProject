@@ -75,11 +75,11 @@
             <div class="row">
                 <div class="col-3">
                 </div>
-                <div class="col-2 text-center link-hover active-link">
+                <div class="col-2 text-center link-hover">
                     <a href="/find-course-by-topic"> Topic </a>
                 </div>
-                <div class="col-2 text-center link-hover">
-                    <a href="/find-course-by-course-id"> Course_Id </a>
+                <div class="col-2 text-center link-hover active-link">
+                    <a href="/find-course-by-courseid"> Course_Id </a>
                 </div>
                 <div class="col-2 text-center link-hover">
                     <a href="/find-course-by-department"> Department </a>
@@ -89,18 +89,22 @@
             </div>
         </div>
         <div class="container">
-        <form method="POST" action="/find-course-by-topic" name="form1">
-         <select name = "dropdown" id="select-1" onchange="if(this.selectedIndex) document.form1.submit();">
-            <option value = "Select" selected>-Select-</option>
-            <option value = "Science" >Science</option>
-            <option value = "Mechanics" >Mechanics</option>
-            <option value = "Mathematics" >Mathematics</option>
-         </select>
-        </form>
+            <input type="text" id="mySearch1" onkeyup="myFunction1()" placeholder="Search by Course Id">
+            <input type="text" id="mySearch2" onkeyup="myFunction1()" placeholder="Search by Course Name">
+            <br>
+            <select name = "dropdown" id="mySearch3" onchange="myFunction1();" >
+                <option value = "" selected>-Level-</option>
+                <option value = "Graduate">Graduate</option>
+                <option value = "Undergraduate">Undergraduate</option>
+            </select>
+            <select name = "<% courses_data %>" id="mySearch4" onchange="sortTable()" >
+                <option value = "" selected>-Sort by-</option>
+                <option value = "course_id">Course_id</option>
+                <option value = "name">Course_name</option>
+            </select>
         </div>
         <div class="container">
-            <div>
-            <table class="table">
+            <table class="table" id="myMenu">
                 <tr>
                     <th> Course Id </th>
                     <th> Course Name </th>
@@ -110,11 +114,60 @@
                     <tr>
                         <td> <a href="/courses/<%= courses_data[i].course_id %>"> <%= courses_data[i].course_id %> </a> </td>
                         <td> <a href="/courses/<%= courses_data[i].course_id %>"> <%= courses_data[i].name %> </a> </td>
-                        <td> <a href="/courses/<%= courses_data[i].course_id %>"> <%= courses_data[i].credits %> </a> </td>
+                        <td> <a href="/courses/<%= courses_data[i].course_id %>"> <%= courses_data[i].level %> </a> </td>
                     </tr>
             <% } %>
             </table>
-            </div>
         </div>
+
+        <script>
+            function myFunction1() {
+              var input1, input2, input3, filter1, filter2, table, tr, td, a1, a2, a3, i;
+              input1 = document.getElementById("mySearch1");
+              filter1 = input1.value.toUpperCase();
+              input2 = document.getElementById("mySearch2");
+              filter2 = input2.value.toUpperCase();
+              input3 = document.getElementById("mySearch3").value;
+              table = document.getElementById("myMenu");
+              tr = table.getElementsByTagName("tr");
+              for (i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td");
+                a1 = td[0].getElementsByTagName("a")[0];
+                a2 = td[1].getElementsByTagName("a")[0];
+                a3 = td[2].getElementsByTagName("a")[0];
+                if ((a1.innerHTML.toUpperCase().indexOf(filter1) > -1) && (a2.innerHTML.toUpperCase().indexOf(filter2) > -1) && a3.innerHTML.indexOf(input3) > -1) {
+                  tr[i].style.display = "";
+                } else {
+                  tr[i].style.display = "none";
+                }
+              }
+            }
+            function sortTable() {
+              var table, rows, switching, i, x, y, shouldSwitch,value,t;
+              table = document.getElementById("myMenu");
+              value = document.getElementById("mySearch4").value;
+              switching = true;
+              if(value == "course_id") t=0;
+              else if(value == "name") t=1;
+              else switching=false;
+              while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                  shouldSwitch = false;
+                  x = rows[i].getElementsByTagName("td")[t];
+                  y = rows[i + 1].getElementsByTagName("td")[t];
+                  if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                  }
+                }
+                if (shouldSwitch) {
+                  rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                  switching = true;
+                }
+              }
+            }
+        </script>
     </body>
 </html>
